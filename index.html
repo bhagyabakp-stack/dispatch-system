@@ -2,213 +2,624 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <title>Softlogic Finance - IT Inventory & Dispatch</title>
+    <title>Softlogic Finance – IT Dispatch</title>
+    <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;600;700;900&family=Playfair+Display:wght@700;900&family=Roboto+Mono:wght@400;600;700&display=swap" rel="stylesheet">
     <style>
-        /* 1. Global Box-Sizing & Reset */
-        * { box-sizing: border-box; -webkit-print-color-adjust: exact; }
-        body { font-family: 'Segoe UI', Tahoma, sans-serif; background-color: #f8f9fa; padding: 20px; color: #333; margin: 0; }
-        
-        .no-print { 
-            background: white; padding: 25px; border-radius: 12px; 
-            max-width: 900px; margin: 0 auto 30px auto; 
-            box-shadow: 0 10px 25px rgba(0,0,0,0.05);
-            border: 1px solid #e1e4e8;
+        *, *::before, *::after { box-sizing: border-box; -webkit-print-color-adjust: exact; print-color-adjust: exact; }
+
+        /* ─── LOGIN SCREEN ───────────────────────────────────── */
+        #login-screen {
+            position: fixed; inset: 0;
+            background: #0a0a0a;
+            display: flex; justify-content: center; align-items: center;
+            z-index: 9999;
+        }
+        .login-box {
+            background: #141414;
+            border: 1px solid #2a2a2a;
+            border-radius: 16px;
+            padding: 48px 44px;
+            width: 380px;
+            box-shadow: 0 24px 60px rgba(0,0,0,0.7);
+        }
+        .login-logo {
+            font-family: 'Playfair Display', serif;
+            font-size: 22px;
+            font-weight: 900;
+            color: #fff;
+            margin-bottom: 4px;
+        }
+        .login-logo span { color: #e63946; }
+        .login-sub {
+            font-family: 'Montserrat', sans-serif;
+            font-size: 10px;
+            font-weight: 700;
+            letter-spacing: 3px;
+            color: #555;
+            text-transform: uppercase;
+            margin-bottom: 36px;
+        }
+        .login-label {
+            font-family: 'Montserrat', sans-serif;
+            font-size: 10px;
+            font-weight: 700;
+            letter-spacing: 2px;
+            color: #666;
+            text-transform: uppercase;
+            margin-bottom: 6px;
+            display: block;
+        }
+        .login-input {
+            width: 100%;
+            padding: 12px 14px;
+            background: #1e1e1e;
+            border: 1px solid #2e2e2e;
+            border-radius: 8px;
+            color: #f0f0f0;
+            font-family: 'Montserrat', sans-serif;
+            font-size: 14px;
+            outline: none;
+            margin-bottom: 16px;
+            transition: border-color 0.2s;
+        }
+        .login-input:focus { border-color: #e63946; }
+        .login-btn {
+            width: 100%;
+            padding: 13px;
+            background: #e63946;
+            color: #fff;
+            border: none;
+            border-radius: 8px;
+            font-family: 'Montserrat', sans-serif;
+            font-size: 13px;
+            font-weight: 900;
+            letter-spacing: 2px;
+            text-transform: uppercase;
+            cursor: pointer;
+            margin-top: 4px;
+            transition: background 0.2s;
+        }
+        .login-btn:hover { background: #c1121f; }
+        .login-error {
+            color: #e63946;
+            font-family: 'Montserrat', sans-serif;
+            font-size: 12px;
+            font-weight: 600;
+            text-align: center;
+            margin-top: 14px;
+            display: none;
         }
 
-        .admin-controls { display: grid; grid-template-columns: 1fr 1fr; gap: 30px; margin-bottom: 20px; padding-bottom: 20px; border-bottom: 1px solid #eee; }
-        .search-area { position: relative; }
-        input, button { padding: 12px; border-radius: 6px; border: 1px solid #ced4da; font-size: 14px; }
-        button { cursor: pointer; background: #000; color: white; border: none; font-weight: bold; }
-        
+        /* ─── BODY / PANEL ───────────────────────────────────── */
+        body {
+            font-family: 'Montserrat', sans-serif;
+            background: #0f0f0f;
+            margin: 0;
+            padding: 0;
+        }
+
+        .no-print {
+            max-width: 960px;
+            margin: 28px auto;
+            padding: 28px 32px;
+            background: #1a1a1a;
+            border: 1px solid #2e2e2e;
+            border-radius: 16px;
+            box-shadow: 0 8px 40px rgba(0,0,0,0.5);
+        }
+
+        .panel-title {
+            font-family: 'Playfair Display', serif;
+            font-size: 22px;
+            font-weight: 900;
+            color: #fff;
+            margin: 0 0 22px;
+            letter-spacing: 1px;
+            border-left: 4px solid #e63946;
+            padding-left: 14px;
+        }
+
+        .controls {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 28px;
+        }
+
+        .control-group { display: flex; flex-direction: column; gap: 0; }
+        .control-group label {
+            display: block;
+            font-size: 10px;
+            font-weight: 700;
+            letter-spacing: 1.5px;
+            color: #666;
+            text-transform: uppercase;
+            margin-bottom: 6px;
+            margin-top: 14px;
+        }
+        .control-group label:first-child { margin-top: 0; }
+
+        .ctrl-input {
+            width: 100%;
+            padding: 10px 14px;
+            background: #252525;
+            border: 1px solid #333;
+            border-radius: 8px;
+            color: #f0f0f0;
+            font-family: 'Montserrat', sans-serif;
+            font-size: 14px;
+            outline: none;
+            transition: border-color 0.2s;
+        }
+        .ctrl-input:focus { border-color: #e63946; }
+
+        .btn {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+            padding: 11px 20px;
+            border: none;
+            border-radius: 8px;
+            font-family: 'Montserrat', sans-serif;
+            font-size: 12px;
+            font-weight: 700;
+            letter-spacing: 1.5px;
+            text-transform: uppercase;
+            cursor: pointer;
+            transition: all 0.2s;
+            width: 100%;
+            margin-top: 12px;
+        }
+        .btn-dark  { background: #2e2e2e; color: #fff; }
+        .btn-dark:hover { background: #3a3a3a; }
+        .btn-green { background: #2dc653; color: #fff; }
+        .btn-green:hover { background: #1da843; }
+
+        /* Search autocomplete */
+        .search-wrap { position: relative; }
         #autocomplete-list {
-            position: absolute; border: 1px solid #ddd; z-index: 999;
-            top: 100%; left: 0; right: 0; background: white; max-height: 200px; overflow-y: auto;
+            position: absolute;
+            top: 100%; left: 0; right: 0;
+            background: #1e1e1e;
+            border: 1px solid #333;
+            border-radius: 0 0 8px 8px;
+            z-index: 999;
+            max-height: 200px;
+            overflow-y: auto;
         }
-        .autocomplete-item { padding: 12px; cursor: pointer; border-bottom: 1px solid #eee; }
+        .autocomplete-item {
+            padding: 10px 14px;
+            cursor: pointer;
+            border-bottom: 1px solid #2a2a2a;
+            font-family: 'Roboto Mono', monospace;
+            font-size: 13px;
+            color: #ccc;
+            transition: background 0.15s;
+        }
+        .autocomplete-item:hover { background: #2a2a2a; color: #fff; }
+        .autocomplete-item b { color: #e63946; }
 
-        /* 2. A4 Portrait Document */
-        .dispatch-document { 
-            background: white; width: 210mm; min-height: 297mm; 
-            padding: 20mm; margin: 20px auto; 
-            border: 1px solid #000; display: flex; flex-direction: column;
-            position: relative; z-index: 1;
+        /* ─── DOCUMENT ───────────────────────────────────────── */
+        .page-spacer { height: 24px; }
+
+        .dispatch-document {
+            background: #fff;
+            width: 210mm;
+            min-height: 297mm;
+            padding: 14mm 16mm;
+            margin: 0 auto;
+            display: flex;
+            flex-direction: column;
+            position: relative;
+            font-family: 'Montserrat', sans-serif;
         }
 
-        .header { text-align: center; border-bottom: 3px solid #000; margin-bottom: 40px; padding-bottom: 15px; }
-        .logo { font-size: 34px; font-weight: 800; text-transform: uppercase; letter-spacing: 2px; }
-        .title { font-style: italic; font-size: 20px; margin-top: 8px; }
-        
-        .info-section { margin: 40px 0; line-height: 3; font-size: 16px; }
-        /* Ensuring line inputs are clickable */
-        .line-input { border: none; border-bottom: 1px solid #000; width: 320px; outline: none; font-weight: 600; background: transparent; }
-        
-        /* 3. Table Layout & Column Wrapping */
-        table { width: 100%; border-collapse: collapse; margin: 20px 0; table-layout: fixed; border: 1px solid #000; }
-        th, td { border: 1px solid #000; padding: 10px; vertical-align: top; word-break: break-all; }
-        th { background-color: #000; color: #fff; font-size: 12px; text-transform: uppercase; }
-        
-        .col-item { width: 17%; }
-        .col-sn { width: 25%; }
-        .col-as { width: 50%; } /* Longer width for Adapter Serial */
-        .col-qty { width: 10%; }
-        .col-rem { width: 15%; }
+        /* Left red strip */
+        .dispatch-document::before {
+            content: '';
+            position: absolute;
+            left: 0; top: 0; bottom: 0;
+            width: 5px;
+            background: #e63946;
+        }
 
-        .cell-in { width: 100%; border: none; outline: none; font-size: 14px; background: transparent; font-family: inherit; }
+        /* ── DOC HEADER ── */
+        .doc-header {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding-bottom: 8px;
+            border-bottom: 2.5px solid #111;
+            margin-bottom: 14px;
+        }
 
-        .footer-sig { margin-top: auto; padding-top: 80px; display: flex; justify-content: space-between; }
-        .sig-line { width: 45%; line-height: 4; font-weight: 600; }
+        .doc-logo-block { display: flex; flex-direction: column; }
+        .doc-logo {
+            font-family: 'Playfair Display', serif;
+            font-size: 24px;
+            font-weight: 900;
+            color: #111;
+            line-height: 1;
+        }
+        .doc-logo span { color: #e63946; }
+        .doc-logo-sub {
+            font-size: 8px;
+            font-weight: 700;
+            letter-spacing: 3.5px;
+            color: #888;
+            text-transform: uppercase;
+            margin-top: 3px;
+        }
 
-        /* 4. Printing Calibration */
+        .doc-badge {
+            background: #111;
+            color: #fff;
+            font-family: 'Montserrat', sans-serif;
+            font-size: 11px;
+            font-weight: 900;
+            letter-spacing: 4px;
+            text-transform: uppercase;
+            padding: 7px 20px;
+            clip-path: polygon(8px 0%, 100% 0%, calc(100% - 8px) 100%, 0% 100%);
+        }
+
+        /* ── INFO SECTION ── */
+        .info-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 10px 20px;
+            margin-bottom: 14px;
+            padding: 12px 14px;
+            border: 1.5px solid #e8e8e8;
+            border-left: 4px solid #111;
+            border-radius: 6px;
+            background: #fafafa;
+        }
+
+        .info-row {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+        .info-row-full {
+            grid-column: 1 / -1;
+        }
+
+        .info-lbl {
+            font-size: 9px;
+            font-weight: 800;
+            letter-spacing: 2px;
+            color: #999;
+            text-transform: uppercase;
+            white-space: nowrap;
+            min-width: 80px;
+        }
+
+        .info-val {
+            border: none;
+            border-bottom: 1.5px solid #bbb;
+            outline: none;
+            font-family: 'Montserrat', sans-serif;
+            font-size: 13px;
+            font-weight: 600;
+            color: #111;
+            background: transparent;
+            flex: 1;
+            padding: 2px 4px;
+            transition: border-color 0.2s;
+        }
+        .info-val:focus { border-color: #e63946; }
+
+        .info-date {
+            font-family: 'Roboto Mono', monospace;
+            font-size: 12px;
+            font-weight: 700;
+            color: #111;
+            background: #f0f0f0;
+            padding: 3px 10px;
+            border-radius: 4px;
+        }
+
+        /* ── TABLE ── */
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-bottom: 14px;
+            table-layout: fixed;
+            border: 1.5px solid #111;
+            border-radius: 6px;
+            overflow: hidden;
+        }
+
+        th {
+            background: #111;
+            color: #fff;
+            font-family: 'Montserrat', sans-serif;
+            font-size: 9px;
+            font-weight: 800;
+            letter-spacing: 2px;
+            text-transform: uppercase;
+            padding: 10px 10px;
+            text-align: left;
+            border: 1px solid #333;
+        }
+
+        td {
+            border: 1px solid #ddd;
+            padding: 8px 10px;
+            vertical-align: middle;
+        }
+
+        tr:nth-child(even) td { background: #f9f9f9; }
+        tr:hover td { background: #fff4f4; }
+
+        .col-item { width: 16%; }
+        .col-sn   { width: 22%; }
+        .col-as   { width: 40%; }
+        .col-qty  { width: 9%; }
+        .col-rem  { width: 13%; }
+
+        .cell-in {
+            width: 100%;
+            border: none;
+            outline: none;
+            font-family: 'Roboto Mono', monospace;
+            font-size: 12px;
+            font-weight: 600;
+            color: #111;
+            background: transparent;
+        }
+        .cell-in::placeholder { color: #bbb; font-weight: 400; }
+
+        /* ── SIGNATURES ── */
+        .footer-sig {
+            margin-top: auto;
+            padding-top: 30px;
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 20px;
+        }
+
+        .sig-card {
+            border: 1.5px solid #e0e0e0;
+            border-radius: 6px;
+            padding: 10px 14px;
+        }
+
+        .sig-row {
+            display: flex;
+            align-items: flex-end;
+            gap: 8px;
+            padding: 10px 0;
+            border-bottom: 1px solid #eee;
+        }
+        .sig-row:last-child { border-bottom: none; padding-bottom: 0; }
+
+        .sig-lbl {
+            font-size: 9px;
+            font-weight: 800;
+            letter-spacing: 1.5px;
+            text-transform: uppercase;
+            color: #888;
+            white-space: nowrap;
+        }
+        .sig-line-fill {
+            flex: 1;
+            border-bottom: 1.5px solid #bbb;
+            height: 18px;
+        }
+
+        /* ─── PRINT ─────────────────────────────────────────── */
         @page { size: A4 portrait; margin: 0; }
         @media print {
-            body { background: white; padding: 0; margin: 0; }
-            .no-print { display: none !important; }
-            .dispatch-document { border: none; margin: 0; width: 100%; height: 100%; padding: 20mm; }
-            table { width: 100%; border: 1px solid #000 !important; }
-            input { border-bottom: 1px solid #000 !important; }
+            .no-print, .page-spacer { display: none !important; }
+            body { background: white; }
+            .dispatch-document {
+                width: 210mm;
+                min-height: 297mm;
+                padding: 14mm 16mm;
+                margin: 0;
+                border: none;
+                box-shadow: none;
+            }
+            tr:hover td { background: transparent; }
         }
     </style>
 </head>
 <body>
-<div id="login-screen" style="position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: #003366; display: flex; justify-content: center; align-items: center; z-index: 9999;">
-    <div style="background: white; padding: 40px; border-radius: 10px; box-shadow: 0 10px 25px rgba(0,0,0,0.3); text-align: center; width: 350px;">
-        <h2 style="margin-top: 0; color: #003366;">IT Portal Login</h2>
-        <input type="text" id="username" placeholder="Username" style="width: 100%; margin-bottom: 15px; padding: 12px; border: 1px solid #ddd; border-radius: 5px;">
-        <input type="password" id="password" placeholder="Password" style="width: 100%; margin-bottom: 20px; padding: 12px; border: 1px solid #ddd; border-radius: 5px;">
-        <button onclick="checkLogin()" style="width: 100%; padding: 12px; background: #000; color: white; border: none; border-radius: 5px; font-weight: bold; cursor: pointer;">ENTER SYSTEM</button>
-        <p id="login-error" style="color: red; font-size: 13px; margin-top: 15px; display: none;">Invalid Credentials</p>
+
+<!-- ─── LOGIN ─────────────────────────────────────── -->
+<div id="login-screen">
+    <div class="login-box">
+        <div class="login-logo">Softlogic <span>Finance</span> PLC</div>
+        <div class="login-sub">IT Portal Access</div>
+        <label class="login-label">Username</label>
+        <input type="text" id="username" class="login-input" placeholder="Enter username" onkeydown="if(event.key==='Enter')checkLogin()">
+        <label class="login-label">Password</label>
+        <input type="password" id="password" class="login-input" placeholder="Enter password" onkeydown="if(event.key==='Enter')checkLogin()">
+        <button class="login-btn" onclick="checkLogin()">Enter System</button>
+        <div id="login-error" class="login-error">⚠ Invalid credentials. Please try again.</div>
     </div>
 </div>
 
-<script>
-    function checkLogin() {
-        const u = document.getElementById('username').value;
-        const p = document.getElementById('password').value;
-
-        // Set your desired credentials here
-        if (u === "admin" && p === "softlogic123") {
-            document.getElementById('login-screen').style.display = 'none';
-        } else {
-            document.getElementById('login-error').style.display = 'block';
-        }
-    }
-</script>
+<!-- ─── CONTROL PANEL ─────────────────────────────── -->
 <div class="no-print">
-    <div class="admin-controls">
-        <div>
-            <h4>Add or Update Inventory</h4>
-            <input type="text" id="newSN" placeholder="Laptop Serial">
-            <input type="text" id="newAS" placeholder="Adapter Serial">
-            <button onclick="saveToInventory()">SAVE DATA</button>
+    <div class="panel-title">IT Inventory &amp; Dispatch System</div>
+
+    <div class="controls">
+        <div class="control-group">
+            <label>Add / Update Inventory</label>
+            <input type="text" class="ctrl-input" id="newSN" placeholder="Laptop Serial Number">
+            <label>Adapter Serial</label>
+            <input type="text" class="ctrl-input" id="newAS" placeholder="Adapter Serial Number">
+            <button class="btn btn-dark" onclick="saveToInventory()">
+                <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M19 21H5a2 2 0 01-2-2V5a2 2 0 012-2h11l5 5v11a2 2 0 01-2 2z"/><polyline points="17 21 17 13 7 13 7 21"/><polyline points="7 3 7 8 15 8"/></svg>
+                Save to Inventory
+            </button>
         </div>
-        <div class="search-area">
-            <h4>Search Laptop</h4>
-            <input type="text" id="searchInput" placeholder="Search..." oninput="showSuggestions(this.value)" style="width: 80%;">
-            <div id="autocomplete-list"></div>
-            <button onclick="window.print()" style="background:#000; margin-top:10px; width: 100%;">PRINT DISPATCH NOTE</button>
+
+        <div class="control-group">
+            <label>Search Laptop Serial</label>
+            <div class="search-wrap">
+                <input type="text" class="ctrl-input" id="searchInput" placeholder="Type serial to search…" oninput="showSuggestions(this.value)" autocomplete="off">
+                <div id="autocomplete-list"></div>
+            </div>
+            <button class="btn btn-green" onclick="window.print()" style="margin-top: auto;">
+                <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M6 9V2h12v7"/><rect x="6" y="14" width="12" height="8"/><path d="M6 18H4a2 2 0 01-2-2v-5a2 2 0 012-2h16a2 2 0 012 2v5a2 2 0 01-2 2h-2"/></svg>
+                Print Dispatch Note
+            </button>
         </div>
     </div>
 </div>
 
+<div class="page-spacer"></div>
+
+<!-- ─── DISPATCH DOCUMENT ─────────────────────────── -->
 <div class="dispatch-document">
-    <div class="header">
-        <div class="logo">Softlogic Finance</div>
-        <div class="title">Advice Of Dispatch</div>
+
+    <!-- HEADER -->
+    <div class="doc-header">
+        <div class="doc-logo-block">
+            <div class="doc-logo">Softlogic <span>Finance</span> PLC</div>
+            <div class="doc-logo-sub">Information Technology Department</div>
+        </div>
+        <div class="doc-badge">Advice of Dispatch</div>
     </div>
 
-    <div class="info-section">
-        Sent By - <input type="text" class="line-input" id="inpSent"><br>
-        Received By - <input type="text" class="line-input" id="inpReceived"><br>
-        DATE - <b id="currentDateTime"></b>
+    <!-- INFO GRID -->
+    <div class="info-grid">
+        <div class="info-row">
+            <span class="info-lbl">Sent By</span>
+            <input type="text" class="info-val" id="inpSent" placeholder="Name">
+        </div>
+        <div class="info-row">
+            <span class="info-lbl">Received By</span>
+            <input type="text" class="info-val" id="inpReceived" placeholder="Name">
+        </div>
+        <div class="info-row info-row-full">
+            <span class="info-lbl">Date &amp; Time</span>
+            <span class="info-date" id="currentDateTime"></span>
+        </div>
     </div>
 
+    <!-- TABLE -->
     <table>
         <thead>
             <tr>
-                <th class="col-item">ITEM</th>
+                <th class="col-item">Item</th>
                 <th class="col-sn">Serial Number</th>
                 <th class="col-as">Adapter Serial</th>
-                <th class="col-qty">QTY</th>
+                <th class="col-qty">Qty</th>
                 <th class="col-rem">Remarks</th>
             </tr>
         </thead>
         <tbody>
             <tr>
                 <td><input class="cell-in" value="Laptop"></td>
-                <td><input class="cell-in" id="resSN"></td>
-                <td style="white-space: normal;"><input class="cell-in" id="resAS"></td>
+                <td><input class="cell-in" id="resSN" placeholder="—"></td>
+                <td><input class="cell-in" id="resAS" placeholder="—"></td>
                 <td><input class="cell-in" value="1"></td>
-                <td><input class="cell-in"></td>
+                <td><input class="cell-in" placeholder="—"></td>
             </tr>
             <tr>
                 <td><input class="cell-in" value="Mouse"></td>
-                <td><input class="cell-in"></td>
-                <td><input class="cell-in"></td>
+                <td><input class="cell-in" placeholder="—"></td>
+                <td><input class="cell-in" placeholder="—"></td>
                 <td><input class="cell-in" value="1"></td>
-                <td><input class="cell-in"></td>
+                <td><input class="cell-in" placeholder="—"></td>
             </tr>
             <tr>
                 <td><input class="cell-in" value="Bag"></td>
-                <td><input class="cell-in"></td>
-                <td><input class="cell-in"></td>
+                <td><input class="cell-in" placeholder="—"></td>
+                <td><input class="cell-in" placeholder="—"></td>
                 <td><input class="cell-in" value="1"></td>
-                <td><input class="cell-in"></td>
+                <td><input class="cell-in" placeholder="—"></td>
+            </tr>
+            <tr>
+                <td><input class="cell-in" placeholder="—"></td>
+                <td><input class="cell-in" placeholder="—"></td>
+                <td><input class="cell-in" placeholder="—"></td>
+                <td><input class="cell-in" placeholder="—"></td>
+                <td><input class="cell-in" placeholder="—"></td>
             </tr>
         </tbody>
     </table>
 
+    <!-- SIGNATURES -->
     <div class="footer-sig">
-        <div class="sig-line">
-            Prepared By - ________________<br>
-            Authorized By - ________________
+        <div class="sig-card">
+            <div class="sig-row">
+                <span class="sig-lbl">Prepared By</span>
+                <div class="sig-line-fill"></div>
+            </div>
+            <div class="sig-row">
+                <span class="sig-lbl">Authorized By</span>
+                <div class="sig-line-fill"></div>
+            </div>
         </div>
-        <div class="sig-line">
-            Checked By - ________________<br>
-            Received By - ________________
+        <div class="sig-card">
+            <div class="sig-row">
+                <span class="sig-lbl">Checked By</span>
+                <div class="sig-line-fill"></div>
+            </div>
+            <div class="sig-row">
+                <span class="sig-lbl">Received By</span>
+                <div class="sig-line-fill"></div>
+            </div>
         </div>
     </div>
+
 </div>
 
 <script>
-    const defaultInventory = [
-       { "sn": "DT153F2", "as": "CN-0RN2C-777S1-71A-06KR-A07" },
-{ "sn": "B9Q3V93", "as": "CN-0MGJN9-LOC00-139-20DD-A10" },
-{ "sn": "51WFN93", "as": "CN-0MGJN9-LOC00-11G-B89E-A10" },
-{ "sn": "5JXVWZ2", "as": "CN-OBD865-48661-192-9HFWA02" },
-{ "sn": "BQJHG22", "as": "CANNOT_SEE" },
-{ "sn": "2062MW2", "as": "CN-0MGJN9-LOC00-1C4-AG24-A10" },
-{ "sn": "7KW6PH3", "as": "CN-0MGJN9-LOC00-1C4-AG1H-A10" },
-{ "sn": "62K5L24", "as": "CN-01C4XJ-LOC00-43K-276C-A01" },
-{ "sn": "9R153F2", "as": "CANNOT_SEE" },
-{ "sn": "BDWTWJ2", "as": "CN-09RN2C-77781-71A-04TO-A07" },
-{ "sn": "J0WFN93", "as": "CN-OMGJN9-LOC00-1C4-AG25_A10" },
-{ "sn": "B3C4HB3", "as": "CN-0KXTTW-LOC00-0B2-552F-A12" },
-{ "sn": "BZ52MW2", "as": "CN-0MGJN9-LOC00-01G-708F-A08" },
-{ "sn": "D382PH3", "as": "CN-00285K-CH200-177-OEQH-A10" },
-{ "sn": "3K22PH3", "as": "CN-00285K-CH200-13P-13OY-A10" },
-{ "sn": "5L67PH3", "as": "CN-00285K-CH200-13P-12W5-A10" },
-{ "sn": "F9Q3V93", "as": "CN-0MGJN9-LOC00-13Q-5283-A10" },
-{ "sn": "DYG4HB3", "as": "CN-0KXTTW-LOC00-0BG-DDFC-A12" },
+    function checkLogin() {
+        const u = document.getElementById('username').value;
+        const p = document.getElementById('password').value;
+        if (u === "admin" && p === "softlogic123") {
+            document.getElementById('login-screen').style.display = 'none';
+        } else {
+            document.getElementById('login-error').style.display = 'block';
+        }
+    }
 
-{ "sn": "9BLR763", "as": "CN-0MGJN9-LOC00-09B-3398-A09" },
-{ "sn": "JQ153F2", "as": "CN-06TM1C-LOC00-71D-DD34-A06" },
-{ "sn": "704YLF3", "as": "CN-0MGBN9-LOC00-0BS-8813-A10" },
-{ "sn": "1JH6PH3", "as": "CN-0G4G24-DES00-29K-5LH9-A00" },
-{ "sn": "F682PH3", "as": "CN-00285K-CH200-13M-0OVC-A10" },
-{ "sn": "8HH6PH3", "as": "CN-00285K-CH200-13P-12LF-A10" },
-{ "sn": "DBQ3V93", "as": "CN-0MGJN9-LOC00-13Q-19D4-A10" },
-{ "sn": "DC22PH3", "as": "CN-00285K-CH200-13P-12KU-A10" },
-{ "sn": "GF6MD63", "as": "CN-0KXTTW-LOC00-1BP-5312-A12" },
-{ "sn": "55T3HB3", "as": "CN-0MGJN9-LOC00-1C4-AG27-A10" },
-{ "sn": "FBQ3V93", "as": "CN-0MGJN9-LOC00-0BS-881C-A10" },
-{ "sn": "C1T3HB3", "as": "CN-0KXTTW-LOC00-0B2-5647-A12" },
-{ "sn": "H9Q3V93", "as": "CANNOT_SEE" },
-{ "sn": "7BQ3V93", "as": "CN-OMGJN9-LOC00-09B-5428-A09" },
-{ "sn": "6T153F2", "as": "CN-09RN2C-77781-719-07V5-A07" },
-{ "sn": "CTF2PH3", "as": "CN-0XK850-48661-97U-0619-A02" },
-{ "sn": "7H4KNT2", "as": "CN-OMGJN9-LOC00-985-4939-A08" },
-{ "sn": "D9Q3V93", "as": "CN-0MGJN9-LOC00-139-20AD-A10" },
-{ "sn": "1SF2PH3", "as": "CN-0MGJN9-LOC00-1C4-AF9C-A10" }
+    const defaultInventory = [
+        { "sn": "DT153F2", "as": "CN-0RN2C-777S1-71A-06KR-A07" },
+        { "sn": "B9Q3V93", "as": "CN-0MGJN9-LOC00-139-20DD-A10" },
+        { "sn": "51WFN93", "as": "CN-0MGJN9-LOC00-11G-B89E-A10" },
+        { "sn": "5JXVWZ2", "as": "CN-OBD865-48661-192-9HFWA02" },
+        { "sn": "BQJHG22", "as": "CANNOT_SEE" },
+        { "sn": "2062MW2", "as": "CN-0MGJN9-LOC00-1C4-AG24-A10" },
+        { "sn": "7KW6PH3", "as": "CN-0MGJN9-LOC00-1C4-AG1H-A10" },
+        { "sn": "62K5L24", "as": "CN-01C4XJ-LOC00-43K-276C-A01" },
+        { "sn": "9R153F2", "as": "CANNOT_SEE" },
+        { "sn": "BDWTWJ2", "as": "CN-09RN2C-77781-71A-04TO-A07" },
+        { "sn": "J0WFN93", "as": "CN-OMGJN9-LOC00-1C4-AG25_A10" },
+        { "sn": "B3C4HB3", "as": "CN-0KXTTW-LOC00-0B2-552F-A12" },
+        { "sn": "BZ52MW2", "as": "CN-0MGJN9-LOC00-01G-708F-A08" },
+        { "sn": "D382PH3", "as": "CN-00285K-CH200-177-OEQH-A10" },
+        { "sn": "3K22PH3", "as": "CN-00285K-CH200-13P-13OY-A10" },
+        { "sn": "5L67PH3", "as": "CN-00285K-CH200-13P-12W5-A10" },
+        { "sn": "F9Q3V93", "as": "CN-0MGJN9-LOC00-13Q-5283-A10" },
+        { "sn": "DYG4HB3", "as": "CN-0KXTTW-LOC00-0BG-DDFC-A12" },
+        { "sn": "9BLR763", "as": "CN-0MGJN9-LOC00-09B-3398-A09" },
+        { "sn": "JQ153F2", "as": "CN-06TM1C-LOC00-71D-DD34-A06" },
+        { "sn": "704YLF3", "as": "CN-0MGBN9-LOC00-0BS-8813-A10" },
+        { "sn": "1JH6PH3", "as": "CN-0G4G24-DES00-29K-5LH9-A00" },
+        { "sn": "F682PH3", "as": "CN-00285K-CH200-13M-0OVC-A10" },
+        { "sn": "8HH6PH3", "as": "CN-00285K-CH200-13P-12LF-A10" },
+        { "sn": "DBQ3V93", "as": "CN-0MGJN9-LOC00-13Q-19D4-A10" },
+        { "sn": "DC22PH3", "as": "CN-00285K-CH200-13P-12KU-A10" },
+        { "sn": "GF6MD63", "as": "CN-0KXTTW-LOC00-1BP-5312-A12" },
+        { "sn": "55T3HB3", "as": "CN-0MGJN9-LOC00-1C4-AG27-A10" },
+        { "sn": "FBQ3V93", "as": "CN-0MGJN9-LOC00-0BS-881C-A10" },
+        { "sn": "C1T3HB3", "as": "CN-0KXTTW-LOC00-0B2-5647-A12" },
+        { "sn": "H9Q3V93", "as": "CANNOT_SEE" },
+        { "sn": "7BQ3V93", "as": "CN-OMGJN9-LOC00-09B-5428-A09" },
+        { "sn": "6T153F2", "as": "CN-09RN2C-77781-719-07V5-A07" },
+        { "sn": "CTF2PH3", "as": "CN-0XK850-48661-97U-0619-A02" },
+        { "sn": "7H4KNT2", "as": "CN-OMGJN9-LOC00-985-4939-A08" },
+        { "sn": "D9Q3V93", "as": "CN-0MGJN9-LOC00-139-20AD-A10" },
+        { "sn": "1SF2PH3", "as": "CN-0MGJN9-LOC00-1C4-AF9C-A10" }
     ];
 
     let inventory = JSON.parse(localStorage.getItem('it_inventory')) || defaultInventory;
@@ -216,25 +627,28 @@
     function saveToInventory() {
         const sn = document.getElementById('newSN').value.trim().toUpperCase();
         const as = document.getElementById('newAS').value.trim().toUpperCase();
-        if (!sn || !as) return alert("Fill all fields.");
-
+        if (!sn || !as) return alert("Please fill in both fields.");
         const idx = inventory.findIndex(item => item.sn === sn);
         if (idx > -1) inventory[idx].as = as;
         else inventory.push({ sn, as });
-
         localStorage.setItem('it_inventory', JSON.stringify(inventory));
-        alert("Saved!");
-        document.getElementById('newSN').value = ""; document.getElementById('newAS').value = "";
+        alert("Saved successfully!");
+        document.getElementById('newSN').value = '';
+        document.getElementById('newAS').value = '';
     }
 
     function showSuggestions(val) {
         const list = document.getElementById('autocomplete-list');
-        list.innerHTML = ""; if (!val) return;
+        list.innerHTML = '';
+        if (!val) return;
         const filtered = inventory.filter(item => item.sn.toUpperCase().includes(val.toUpperCase()));
         filtered.forEach(item => {
-            const div = document.createElement("div");
-            div.className = "autocomplete-item";
-            div.innerHTML = `<b>${item.sn}</b>`;
+            const div = document.createElement('div');
+            div.className = 'autocomplete-item';
+            const idx = item.sn.toUpperCase().indexOf(val.toUpperCase());
+            div.innerHTML = item.sn.substring(0, idx)
+                + '<b>' + item.sn.substring(idx, idx + val.length) + '</b>'
+                + item.sn.substring(idx + val.length);
             div.onclick = () => selectLaptop(item);
             list.appendChild(div);
         });
@@ -244,11 +658,23 @@
         document.getElementById('resSN').value = item.sn;
         document.getElementById('resAS').value = item.as;
         document.getElementById('searchInput').value = item.sn;
-        document.getElementById('autocomplete-list').innerHTML = "";
-        document.getElementById('currentDateTime').innerText = new Date().toLocaleString();
+        document.getElementById('autocomplete-list').innerHTML = '';
+        document.getElementById('currentDateTime').innerText = new Date().toLocaleString('en-GB', {
+            day: '2-digit', month: 'long', year: 'numeric',
+            hour: '2-digit', minute: '2-digit'
+        });
     }
 
-    document.getElementById('currentDateTime').innerText = new Date().toLocaleString();
+    document.addEventListener('click', e => {
+        if (!e.target.closest('.search-wrap')) {
+            document.getElementById('autocomplete-list').innerHTML = '';
+        }
+    });
+
+    document.getElementById('currentDateTime').innerText = new Date().toLocaleString('en-GB', {
+        day: '2-digit', month: 'long', year: 'numeric',
+        hour: '2-digit', minute: '2-digit'
+    });
 </script>
 </body>
 </html>
